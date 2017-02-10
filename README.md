@@ -16,3 +16,11 @@ https://snap.stanford.edu/data/egonets-Facebook.html
 
 In statistics.pdf there are some statistics about the execution time of different configurations. 
 
+##REFERENCES
+
+http://islab.kaist.ac.kr/chungcw/InterConfPapers/km0805-ha-myung.pdf
+
+https://theory.stanford.edu/~sergei/papers/www11-triangles.pdf
+
+https://pdfs.semanticscholar.org/7805/de482edfbec3a736bb6b3d1bb5163435752d.pdf
+
