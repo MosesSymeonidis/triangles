@@ -1,4 +1,4 @@
-# Triangles counting algorithm in Hadoop
+#Triangles counting algorithm in Hadoop
 
 This is a benchmark about 3 trianlge counting algorithms in map-reduce infrastracture (hadoop)
 
