@@ -17,16 +17,16 @@ public class Red_ex_1 extends Reducer <Text, IntPair, Text, DoubleWritable> {
 
 		Iterator<IntPair> it = values.iterator();
 		int p;
-		myGraph g= new myGraph();//δημιουργία γράφου
+		myGraph g= new myGraph();//Graph Greation
 		Configuration conf = context.getConfiguration();
 		p = conf.getInt("partitions", -1);
 		
 		while(it.hasNext()) {
 			IntPair edge=it.next();
-			g.addEdge(edge.getFirst(), edge.getSecond());//προσθήκη ακμής στο γράφο
+			g.addEdge(edge.getFirst(), edge.getSecond());
 		}
 	 	
-		context.write(null,new DoubleWritable(g.countTrianglesCompFor(p)));//υπολογισμός και καταγραφή αριθμόυ τριγώνων
+		context.write(null,new DoubleWritable(g.countTrianglesCompFor(p)));//calculate the triangles
 		
 	}
 	}

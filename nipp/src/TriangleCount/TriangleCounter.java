@@ -12,7 +12,7 @@ import org.apache.hadoop.util.*;
 
 public class TriangleCounter extends Configured implements Tool
 {
-	// 1ος Mapper
+	// first Mapper
     public static class ParseLongLongPairsMapper extends Mapper<LongWritable, Text, LongWritable, LongWritable>
     {
         LongWritable mKey = new LongWritable();
@@ -41,7 +41,7 @@ public class TriangleCounter extends Configured implements Tool
         }
     }
 
-    // 1ος Reducer
+    // first Reducer
     public static class TriadsReducer extends Reducer<LongWritable, LongWritable, Text, LongWritable>
     {
         Text rKey = new Text();
@@ -56,7 +56,7 @@ public class TriangleCounter extends Configured implements Tool
             Iterator<LongWritable> vs = values.iterator();
             for (size = 0; vs.hasNext(); )
             {
-                if (vArray.length==size)//άμα ο πίνακας γεμίσει διπλασίασε το μέγεθος
+                if (vArray.length==size)//if array is full we double the size
                 {
                     vArray = Arrays.copyOf(vArray, vArray.length*2);
                 }
@@ -64,15 +64,15 @@ public class TriangleCounter extends Configured implements Tool
                 long e = vs.next().get();
                 vArray[size++] = e;
 
-                // Με το zero σαν value παράγει όλα τα μοναδικά ζεύγοι ακμών.
+                // if we have zero as value, the aglorithm generates all possible sets of edges.
                 rKey.set(key.toString() + "," + Long.toString(e));
                 context.write(rKey, zero);
             }
 
             Arrays.sort(vArray, 0, size);
 
-            // Με το one παράγει όλα τα δυνατά ζεύγοι τριάδων που μπορούν να δημιουργηθούν όταν μια κορυφή έχει πάνω από μία ακμές.
-            // Αφού πρώτα έχουν ταξινομιθεί ώστε e1 < e2.
+            // if we have one, algorithm generates all possible triples for a vertex.
+            // but first we sort them e1 < e2.
             for (int i=0; i<size; ++i)
             {
                 for (int j=i+1; j<size; ++j)
@@ -84,7 +84,7 @@ public class TriangleCounter extends Configured implements Tool
         }
     }
 
-    // 2ος Mapper
+    // second Mapper
     public static class ParseTextLongPairsMapper extends Mapper<LongWritable, Text, Text, LongWritable>
     {
         Text mKey = new Text();
@@ -106,7 +106,7 @@ public class TriangleCounter extends Configured implements Tool
         }
     }
 
-    // 2os Reducer
+    // second Reducer
     public static class CountTrianglesReducer extends Reducer<Text, LongWritable, LongWritable, LongWritable>
     {
         long count = 0;
@@ -135,6 +135,7 @@ public class TriangleCounter extends Configured implements Tool
         }
     }
 
+    // reducer for aggregation
     public static class AggregateCountsReducer extends Reducer<Text, LongWritable, LongWritable, LongWritable>
     {
         public void reduce(Text key, Iterable<LongWritable> values, Context context)
@@ -150,16 +151,7 @@ public class TriangleCounter extends Configured implements Tool
         }
     }
 
-    /* Το πρόγραμμα διαβάζει δεδομένα από ενα αρχείο το αρχείο έχει της ακμές του γράφου
-	 * πρέπει να είναι της μορφής για κάθε ακμή (v,u) θα πρέπει να υπάρχουν δύο γραμμές στο
-	 * αρχείο v u και u v 
-	 * πχ για τις ακμές (a,b) και (c,a) θα είχαμε το παρακάτω αρχείο
-	 * a b
-	 * b a
-	 * c a
-	 * a c
-	 * 
-	 * */
+    
     public int run(String[] args) throws Exception
     {
     	long startTime = System.nanoTime();

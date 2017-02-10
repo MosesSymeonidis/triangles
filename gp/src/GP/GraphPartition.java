@@ -13,16 +13,6 @@ import org.apache.hadoop.util.*;
 
 
 public class GraphPartition extends Configured implements Tool {
-	 /* Το πρόγραμμα διαβάζει δεδομένα από ενα αρχείο το αρχείο έχει της ακμές του γράφου
-		 * πρέπει να είναι της μορφής για κάθε ακμή (v,u) θα πρέπει να υπάρχουν δύο γραμμές στο
-		 * αρχείο v u και u v 
-		 * πχ για τις ακμές (a,b) και (c,a) θα είχαμε το παρακάτω αρχείο
-		 * a b
-		 * b a
-		 * c a
-		 * a c
-		 * 
-		 * */
 	public static void main(String[] args) throws Exception {
 
 		int res = ToolRunner.run(new Configuration(), new GraphPartition(), args);
@@ -59,7 +49,7 @@ public class GraphPartition extends Configured implements Tool {
 		int ret = job1.waitForCompletion(true) ? 0 : 1;
 		if (ret == 0)
 			ret = job2.waitForCompletion(true) ? 0 : 1;
-		long estimatedTime = System.nanoTime() - startTime; // Χρόνο εκτέλεσης
+		long estimatedTime = System.nanoTime() - startTime;
 		System.out.println("Estimated Execution Time = " + estimatedTime
 				+ " nanoseconds");
 		System.out.println("Estimated Execution Time = " + estimatedTime

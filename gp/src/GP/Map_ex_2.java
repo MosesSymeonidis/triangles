@@ -14,9 +14,7 @@ public class Map_ex_2 extends Mapper <LongWritable, Text, ByteWritable, DoubleWr
 	
 	ByteWritable b= new ByteWritable(Byte.parseByte("1"));
 	public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException  {
-		//στη δεύτερη φάση απλά διαβάζουμε τα επιμέρους αρθοίσματα 
-		//του προηγούμενου βήματος και τα στέλνουμε όλα σε ένα reducer
-		//για το συνολικό άθροισμα
+		
 		 String line = value.toString();
 		 double t=Double.parseDouble(line);
          DoubleWritable v =new DoubleWritable(t);

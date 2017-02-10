@@ -5,6 +5,9 @@ import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 import java.util.Iterator;
 	
+/**
+* Second Reducer
+*/
 public class Red_ex_2 extends Reducer <ByteWritable, DoubleWritable, LongWritable, DoubleWritable> {
 
 	
@@ -15,13 +18,13 @@ public class Red_ex_2 extends Reducer <ByteWritable, DoubleWritable, LongWritabl
 		Iterator<DoubleWritable> it = values.iterator();
 		double Sum=0.0;
 		
-		while(it.hasNext()) {//αθροίζω τις τιμές
+		while(it.hasNext()) {//sum the values
 		Sum+=it.next().get();
 		
 			
 		}
 	 	
-		context.write(null,new DoubleWritable(Sum));//αποθηκεύουμε το άθροισμα στο δίσκο
+		context.write(null,new DoubleWritable(Sum));//save the results
 		
 	}
 	}

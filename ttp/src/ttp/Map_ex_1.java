@@ -1,33 +1,25 @@
 package ttp;
             
-    import java.io.IOException;
+import java.io.IOException;
 import java.util.StringTokenizer;
-   import org.apache.hadoop.examples.SecondarySort.IntPair;
+import org.apache.hadoop.examples.SecondarySort.IntPair;
   
 import org.apache.hadoop.conf.Configuration;
-   // import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.LongWritable;
-    import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 	
 
-
+/**
+* First mapper
+*/
 public class Map_ex_1 extends Mapper <LongWritable, Text, Text, IntPair> {
 		
 	
 	
 		public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException  {
-		/* Ο πρώτος Mapper διαβάζει δεδομένα από ενα αρχείο το αρχείο έχει της ακμές του γράφου
-		 * πρέπει να είναι της μορφής για κάθε ακμή (v,u) θα πρέπει να υπάρχουν δύο γραμμές στο
-		 * αρχείο v u και u v 
-		 * πχ για τις ακμές (a,b) και (c,a) θα είχαμε το παρακάτω αρχείο
-		 * a b
-		 * b a
-		 * c a
-		 * a c
-		 * 
-		 * */
-		//Διάβασμα ακμής
+		
+		//read of the edge
 		String line = value.toString();
 		IntPair valueOut = new IntPair();
 		StringTokenizer tokenizer = new StringTokenizer(line);
@@ -42,16 +34,14 @@ public class Map_ex_1 extends Mapper <LongWritable, Text, Text, IntPair> {
 		
 		int p, a, b, c;
 		Configuration conf = context.getConfiguration();
-		p = conf.getInt("partitions", -1);//παίρνει την παράμετρο p του αλγορίθμου δηλαδή τον αριθμό των partitions
+		p = conf.getInt("partitions", -1);//parameter p the number of partitions
 
-		//εκτέλεση αλγορίθμου για το Map
-		//
 		if (u < v) {
 
 			for (a = 0; a < p - 1; a++) {
 
 				for (b = a + 1; b < p; b++) {
-					//Υπολογισμός και αποστολή 2-partitions
+					//compute and send 2-partitions
 					if (((a == u % p) && (v % p == b))
 							|| ((a == v % p) && (u % p == b))
 							|| ((a == v % p) && (u % p == a))
@@ -59,12 +49,7 @@ public class Map_ex_1 extends Mapper <LongWritable, Text, Text, IntPair> {
 						valueOut.set(u, v);
 						context.write(new Text(a + "," + b + ",-1"), valueOut);
 					}
-					/*υπολογισμός και αποστολή 3-partitions
-					*ο υπολογισμός για τα 3-partitions στο paper 
-					*γίνεται με τον κώδικα παρακάτω που βρίσκεται 
-					*σε σχόλια για να μην κάνουμε 2 for και να 
-					*μειώσουμε τον χρόνο εκτέλεσης στέλνουμε και
-					*τα 3-partitions στο ίδιο for
+					/*copmute and send 3-partitions
 					*/
 					
 					if (u % p != v % p && b < p - 1) {
@@ -84,7 +69,7 @@ public class Map_ex_1 extends Mapper <LongWritable, Text, Text, IntPair> {
 			}
 			
 	      /* 
-	       * κώδικας όπως περιγράφεται στο paper
+	       * The original code of the paper
 	       if (u%p!=v%p){
 	        	 for (a=0;a<p-2;a++){
 	 	        	for (b=a+1;b<p-1;b++){

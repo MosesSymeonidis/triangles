@@ -1,56 +1,53 @@
 package ttp;
 import java.util.*;
 
+/**
+* Graph Stracture
+*/
 public class myGraph { 
-	// δομή που κρατάει το γράφο
 	
-	// ένα hashMap της μορφής<καρυφή,<set γειτώνων>>
+
 	protected HashMap<Integer, HashSet<Integer>> graph = new HashMap<Integer, HashSet<Integer>>();
 	
-	// βοηθητική δομή για ταξινόμηση κορυφών με βάση το βαθμό τους
+	// keeps the number of vertexes
 	protected ArrayList<Integer> vertex = new ArrayList<Integer>();
 
 	public myGraph() {
 	}
 
-	// προσθήκη μιας κορυφής
+	
 	public void addVertex(int newVertex) {
-		if (!vertex.contains(newVertex)) {// αν δεν υπάρχει η κορυφή
+		if (!vertex.contains(newVertex)) {
 			vertex.add(newVertex);
 		}
 	}
 
-	// προσθήκη μιας ακμής στο γράφο
+	// and edge at the graph
 	public void addEdge(int vertex1, int vertex2) {
-		if (!graph.containsKey(vertex1)) {// αν δέν υπάρχει η κορυφή στο hashmap
-											// γειτνίασης
-			
-			graph.put(vertex1, new HashSet<Integer>());// προσθεσέ την ακμή
+		if (!graph.containsKey(vertex1)) {
+			graph.put(vertex1, new HashSet<Integer>());
 		}
 
 		if (!graph.containsKey(vertex2)) {
 			graph.put(vertex2, new HashSet<Integer>());
 		}
-		graph.get(vertex1).add(vertex2);// άλλαξε το set των γειτώνων
+		graph.get(vertex1).add(vertex2);
 		graph.get(vertex2).add(vertex1);
 		addVertex(vertex1);
 		addVertex(vertex2);
 
 	}
 
-	// επιστρέφει ένα ArrayList με τους γέιτωνες της v
 	public ArrayList<Integer> getNeighbors(Integer v) {
 		return new ArrayList<Integer>(graph.get(v));
 	}
 
-	// επιστρέφει το βαθμό της v
+	// returns the grade of v
 	public int degree(Integer v) {
 		return getNeighbors(v).size();
 	}
-
-	public double countNaiveTriangles(int p)// απλός αλγόριθμος καταγραφής
-											// τριγώνων με ταξινόμηση κορυφών με
-											// βάση το όνομα
+	// simple algoritm triangle counting based on edge sorting
+	public double countNaiveTriangles(int p)
 	{
 		double counter = 0.0;
 
@@ -64,11 +61,10 @@ public class myGraph {
 					if ((s < j) && (j < k) && graph.get(k).contains(j)) {
 
 						if ((s % p) == (j % p) && (k % p) == (j % p)) {
-							// καταγραφή τριγώνων που βρίσκονται σε 1-partition
+							// count triange of 1-partition
 							counter = counter + (1.0 / (p - 1));
 						} else {
-							counter = counter + 1;// καταγραφή όλων των
-													// υπόλοιπων
+							counter = counter + 1;// count all others
 						}
 					}
 				}
@@ -78,8 +74,7 @@ public class myGraph {
 		return counter;
 	}
 
-	// -----------------------------------------------------------------------------------------------
-	// πρώτος γείτωνας (γείτωνας με ελάχιστο βαθμό) του v μέτα τον j
+	// first neighbor with min grade 
 	public int n_n_i(int v, int j) {
 		int index, min = vertex.size();
 		ArrayList<Integer> neighbors = getNeighbors(v);
@@ -92,7 +87,7 @@ public class myGraph {
 		return min;
 	}
 
-	// πρώτος γείτωνας (γείτωνας με ελάχιστο βαθμό) του v
+	// first neighbor with min grade of v
 	public int f_n_i(int v) {
 		int index, min = vertex.size();
 		ArrayList<Integer> neighbors = getNeighbors(v);
@@ -108,7 +103,7 @@ public class myGraph {
 
 	// compact forward
 	public double countTrianglesCompFor(int p) {
-		// ταξινόμηση κορυφών με βάση τον βαθμό τους
+		// sort the vertexes by their grades
 		java.util.Collections.sort(vertex, new java.util.Comparator<Integer>() {
 
 					@Override
@@ -118,7 +113,7 @@ public class myGraph {
 					}
 				});
 
-		// αλγόριθμος compact-forward
+		// algorithm compact-forward
 		double counter = 0.0;
 		
 		int l;
@@ -145,12 +140,12 @@ public class myGraph {
 								tempi = vertex.get(i);
 
 								if (templ % p == tempk % p
-										&& tempk % p == tempi % p) {// καταγραφή τριγώνων που βρίσκονται σε 1-partition
+										&& tempk % p == tempi % p) {// counting of triangles which is at 1-partition
 									counter = counter + (1.0 / (p - 1));
 
 								} else {
 									counter = counter + 1.0;
-								}// καταγραφή όλων των υπόλοιπων
+								}// counting of the others
 
 								j = n_n_i(tempi, j);
 								k = n_n_i(templ, k);
